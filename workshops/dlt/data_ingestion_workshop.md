@@ -133,7 +133,7 @@ def search_twitter(query):
 	for row in paginated_get(query):
 		yield row
 
-# Get one row at a time
+# Get one row at a timem
 for row in extract_data("cat pictures"):
 	# print the row
 	print(row)
