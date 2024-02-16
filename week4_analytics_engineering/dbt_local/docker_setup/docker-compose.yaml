@@ -8,5 +8,5 @@ services:
     volumes:
       - .:/usr/app
       - ~/.dbt/:/root/.dbt/
-      - ~/.google/credentials/google_credentials.json:/.google/credentials/google_credentials.json
+      - ~/.google/credentials/dbt-service-account-creds.json:/.google/credentials/dbt-service-account-creds.json
     network_mode: host
