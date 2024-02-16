@@ -11,8 +11,8 @@ renamed as (
     select
         {{ dbt_utils.generate_surrogate_key(['vendor_id', 'lpep_pickup_datetime']) }} as tripid,
         vendor_id,
-        lpep_pickup_datetime,
-        lpep_dropoff_datetime,
+        pickup_datetime,
+        dropoff_datetime,
         store_and_fwd_flag,
         rate_code,
         passenger_count,
