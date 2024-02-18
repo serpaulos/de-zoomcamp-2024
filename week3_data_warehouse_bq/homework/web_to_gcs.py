@@ -12,9 +12,10 @@ Pre-reqs:
 """
 
 # services = ['fhv','green','yellow']
-init_url = 'https://d37ci6vzurychx.cloudfront.net/trip-data/'
-#init_url = 'https://github.com/DataTalksClub/nyc-tlc-data/releases/download/'
+#init_url = 'https://d37ci6vzurychx.cloudfront.net/trip-data/'
+init_url = f'https://github.com/DataTalksClub/nyc-tlc-data/releases/download/'
 # switch out the bucketname
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "/home/psergios/.google/credentials/google_credentials.json"
 BUCKET = os.environ.get("GCP_GCS_BUCKET", "zoomcamp_2004_bucket")
 
 
@@ -32,8 +33,11 @@ def upload_to_gcs(bucket, object_name, local_file):
     blob = bucket.blob(object_name)
     blob.upload_from_filename(local_file)
 
+#https://github.com/DataTalksClub/nyc-tlc-data/releases/download/yellow/yellow_tripdata_2019-01.csv.gz
+def web_to_gcs(year, service, save_dir):
+    if not os.path.exists(save_dir):
+        os.makedirs(save_dir)
 
-def web_to_gcs(year, service):
     for i in range(12):
         
         # sets the month part of the file_name string
@@ -41,7 +45,6 @@ def web_to_gcs(year, service):
         month = month[-2:]
 
         # csv file_name
-        #https://d37ci6vzurychx.cloudfront.net/trip-data/green_tripdata_2022-01.parquet
         file_name = f"{service}_tripdata_{year}-{month}.csv.gz"
 
         # download it using requests via a pandas df
@@ -60,8 +63,8 @@ def web_to_gcs(year, service):
         upload_to_gcs(BUCKET, f"{service}/{file_name}", file_name)
         print(f"GCS: {service}/{file_name}")
 
-
-web_to_gcs('2022', 'green')
+save_directory = 'week3_data_warehouse_bq/homework'
+web_to_gcs('2019', 'fhv', save_directory)
 #web_to_gcs('2020', 'green')
 # web_to_gcs('2019', 'yellow')
 # web_to_gcs('2020', 'yellow')
