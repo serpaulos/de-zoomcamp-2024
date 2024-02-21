@@ -5,6 +5,6 @@ sources:
     database: de-zoomcamp-2024-411615
     schema: trips_data_all
 
-  - tables:
+    tables:
       - name: green_tripdata
-      #- name: yellow_tripdata
+      - name: yellow_tripdata
