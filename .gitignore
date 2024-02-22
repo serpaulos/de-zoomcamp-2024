@@ -1,3 +1,4 @@
+!week4_analytics_engineering/dbt_cloud/seeds/taxi_zone_lookup.csv
 */__init__.py
 *.json
 .terraform
