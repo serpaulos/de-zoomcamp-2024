@@ -197,11 +197,11 @@ models:
             description: Total amount of all tolls paid in trip.
           - name: Total_amount 
             description: The total amount charged to passengers. Does not include cash tips.
-    - name: stg_yellow_tripdata
+    - name: stg_fhv_tripdata
       description: > 
-      Trips made by New York City's. In a FHV (For Hire Veicule).
-    columns:
-        - name: tripid
+        Trips made by New York City's. In a FHV (For Hire Veicule).
+      columns:
+          - name: tripid
             description: Primary key for this table, generated with a concatenation of Dispatching_base_num+pickup_datetime
             tests:
                 - unique:
