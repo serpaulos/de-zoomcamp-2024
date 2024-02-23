@@ -4,12 +4,8 @@
     )
 }}
 
--- dispatching_base_num
-
-
 select
     -- identifiers
-    {{ dbt_utils.generate_surrogate_key(['Dispatching_base_num', 'pickup_datetime']) }} as tripid,
     cast(Dispatching_base_num as varchar) as dispatching_base_num,
     {{ dbt.safe_cast("PUlocationID", api.Column.translate_type("integer")) }} as pickup_locationid,
     {{ dbt.safe_cast("DOlocationID", api.Column.translate_type("integer")) }} as dropoff_locationid,
@@ -22,4 +18,4 @@ select
     cast(SR_Flag as varchar) as store_and_fwd_flag,
     cast(Affiliated_base_number as varchar) as affiliated_base_number,
 
-from tripdata
+from {{ source('staging', 'fhv_tripdata')}}
