@@ -9,7 +9,7 @@ sources:
 
       # loaded_at_field: record_loaded_at
     tables:
-      - name: stg_fhv_tripdata
+      - name: fhv_tripdata
          # freshness:
            # error_after: {count: 6, period: hour}
 models:
