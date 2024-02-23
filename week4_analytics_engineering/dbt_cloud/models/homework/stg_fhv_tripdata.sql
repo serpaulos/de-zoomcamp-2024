@@ -18,4 +18,4 @@ select
     cast(SR_Flag as varchar) as store_and_fwd_flag,
     cast(Affiliated_base_number as varchar) as affiliated_base_number,
 
-from {{ source('staging', 'fhv_tripdata')}}
+from {{ source('staging', 'stg_fhv_tripdata')}}
