@@ -15,7 +15,7 @@ select
     cast(dropOff_datetime as timestamp) as dropoff_datetime,
     
     -- trip info
-    cast(SR_Flag as varchar) as store_and_fwd_flag,
-    cast(Affiliated_base_number as varchar) as affiliated_base_number,
+    cast(SR_Flag as string) as store_and_fwd_flag,
+    cast(Affiliated_base_number as string) as affiliated_base_number,
 
 from {{ source('staging', 'fhv_tripdata')}}
