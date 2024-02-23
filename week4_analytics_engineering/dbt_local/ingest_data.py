@@ -1,0 +1,100 @@
+import io
+import os
+import requests
+import pandas as pd
+from google.cloud import storage
+from pathlib import Path
+
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "/home/psergios/.google/credentials/google_credentials.json"
+BUCKET = os.environ.get("GCP_GCS_BUCKET", "psergios_zoomcamp_2024")
+
+
+def upload_to_gcs(bucket, object_name, local_file):
+    """
+    Ref: https://cloud.google.com/storage/docs/uploading-objects#storage-upload-object-python
+    """
+    # # WORKAROUND to prevent timeout for files > 6 MB on 800 kbps upload speed.
+    # # (Ref: https://github.com/googleapis/python-storage/issues/74)
+    # storage.blob._MAX_MULTIPART_SIZE = 5 * 1024 * 1024  # 5 MB
+    # storage.blob._DEFAULT_CHUNKSIZE = 5 * 1024 * 1024  # 5 MB
+
+    client = storage.Client()
+    bucket = client.bucket(bucket)
+    blob = bucket.blob(object_name)
+    blob.upload_from_filename(local_file)
+
+#https://github.com/DataTalksClub/nyc-tlc-data/releases/download/yellow/yellow_tripdata_2019-01.csv.gz
+def download(year, service):
+    
+    for i in range(12):
+        
+        # sets the month part of the file_name string
+        month = '0'+str(i+1)
+        month = month[-2:]
+
+
+        url = f"https://github.com/DataTalksClub/nyc-tlc-data/releases/download/{service}/{service}_tripdata_{year}-{month}.csv.gz"
+
+        if not os.path.exists(f"data/{service}"):
+            os.makedirs(f"data/{service}") 
+
+        # Chunk size for downloading
+        chunk_size = 1024 * 1024  # 1 MB chunks
+
+        # downloading the file sending the request to URL
+        req = requests.get(url, stream=True)
+
+        # Determine the total file size from the Content-Length header
+        total_size = int(req.headers.get('content-length', 0))
+
+        data_folder = f"data/{service}"
+
+        # split url to get file name
+        file_name = url.split('/')[-1]
+        dest_folder = data_folder
+        file_path = os.path.join(dest_folder, file_name)
+
+
+        with open(file_path, 'wb') as file:
+            for chunk in req.iter_content(chunk_size):
+                if chunk:
+                    file.write(chunk)
+                    file_size = file.tell()
+                    print(f'Downloading {file_name} ... {file_size}/{total_size} bytes', end='\r')
+        
+        taxi_dtypes = {
+            'VendorID': pd.Int64Dtype(),
+            'passenger_count': pd.Int64Dtype(),
+            'trip_distance': float,
+            'RatecodeID': pd.Int64Dtype(),
+            'store_and_fwd_flag': str,
+            'PULocationID': pd.Int64Dtype(),
+            'DOLocationID': pd.Int64Dtype(),
+            'payment_type': pd.Int64Dtype(),
+            'fare_amount': float,
+            'extra': float,
+            'mta_tax': float,
+            'tip_amount': float,
+            'tolls_amount': float,
+            'improvement_surcharge': float,
+            'total_amount': float,
+            'congestion_surcharge': float
+        }
+        if service == "yellow":
+            parse_dates = ['tpep_pickup_datetime', 'tpep_dropoff_datetime']
+        elif service == "green":
+            parse_dates = ['lpep_pickup_datetime', 'lpep_dropoff_datetime']    
+
+        new_csv = pd.read_csv(file_path, compression='gzip', dtype=taxi_dtypes, parse_dates=parse_dates)
+        #print(new_csv.dtypes)
+        new_csv = new_csv.to_csv(file_path, compression='gzip')
+        #print(new_file_name, file_path)
+
+        #upload it to gcs 
+        upload_to_gcs(BUCKET, file_path, file_path)
+        print(f"GCS: {file_path}")
+
+download('2019', 'fhv')
+# download('2020', 'green')
+# download('2019', 'yellow')
+# download('2020', 'yellow')
