@@ -6,7 +6,7 @@
 
 select
     -- identifiers
-    cast(Dispatching_base_num as varchar) as dispatching_base_num,
+    cast(Dispatching_base_num as string) as dispatching_base_num,
     {{ dbt.safe_cast("PUlocationID", api.Column.translate_type("integer")) }} as pickup_locationid,
     {{ dbt.safe_cast("DOlocationID", api.Column.translate_type("integer")) }} as dropoff_locationid,
     
