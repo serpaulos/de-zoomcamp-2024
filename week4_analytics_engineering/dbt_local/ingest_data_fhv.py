@@ -1,12 +1,15 @@
 import io
 import os
+from dotenv import load_dotenv
+
 import requests
-import pandas as pd
 from google.cloud import storage
 from pathlib import Path
 
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "/home/psergios/.google/credentials/google_credentials.json"
-BUCKET = os.environ.get("GCP_GCS_BUCKET", "psergios_zoomcamp_2024")
+load_dotenv()
+
+BUCKET = os.getenv("GCP_GCS_BUCKET", "GCP_GCS_BUCKET")
+os.getenv("GOOGLE_APPLICATION_CREDENTIALS", "GOOGLE_APPLICATION_CREDENTIALS") 
 
 
 def upload_to_gcs(bucket, object_name, local_file):
