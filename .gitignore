@@ -11,11 +11,14 @@ data/
 *.csv
 *.csv.gz
 *.parquet
+*.parquet.crc
 output.txt
 keys
 .env
 *.duckdb
 *.duckdb.wal
+_SUCCESS
+._SUCCESS.crc
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
